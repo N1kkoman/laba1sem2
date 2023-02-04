@@ -2,7 +2,9 @@
 #include <string>
 #include <iostream>
 #include <thread>
+#include <chrono>
 #include "windows.h"
+
 
 class AnimatedText
 {
@@ -21,6 +23,11 @@ public:
     int update() 
     {
         currentChar++;
+        return currentChar;
+    }
+
+    int getCurrentChar() const
+    {
         return currentChar;
     }
 
@@ -49,7 +56,7 @@ private:
 
 int main()
 {
-    AnimatedText animatedText("It was kinda difficult", 22);
+    AnimatedText animatedText("It was kinda difficult", 5);
 
     //animatedText.DrawInConsole(); // логика работы (если нужен вывод текста в консоль)
 
@@ -63,6 +70,8 @@ int main()
     text.setFont(font);
     text.setCharacterSize(24);
 
+    long long delay = animatedText.getDuration() * 1000 / animatedText.getTextSize();
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -72,15 +81,15 @@ int main()
                 window.close();
         }
 
-        for (int i = 0; i < animatedText.getTextSize(); i++, Sleep(animatedText.getDuration() * 1000 / animatedText.getTextSize()))
+        window.clear();
+        if (animatedText.getCurrentChar() < animatedText.getTextSize())
         {
             animatedText.update();
             text.setString(animatedText.getDisplayedText());
-            window.clear();
-            window.draw(text);
-            window.display();
         }
+        window.draw(text);
+        window.display();
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }
-
     return 0;
 }
