@@ -39,7 +39,7 @@ public:
         }
     }
 
-    float getTextSize() const
+    int getTextSize() const
     {
         return m_text.length();
     }
